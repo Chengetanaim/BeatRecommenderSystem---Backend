@@ -5,14 +5,16 @@ from ...database import get_db
 from sqlalchemy.orm import Session
 from typing import Annotated
 from fastapi import Response
+from ...oauth2 import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 db_session = Annotated[Session, Depends(get_db)]
+db_current_user = Annotated[schemas.UserResponse, Depends(get_current_user)]
 
 
 @router.get("/", response_model=list[schemas.UserResponse])
-def get_users(db: db_session):
+def get_users(db: db_session, current_user: db_current_user):
     users = db.query(models.User).order_by(desc(models.User.created_at))
     return users
 
@@ -48,7 +50,11 @@ def create_user(user: schemas.UserCreate, db: db_session):
 
 
 @router.get("/{id}", response_model=schemas.UserResponse)
-def get_user(id: int, db: db_session):
+def get_user(
+    id: int,
+    db: db_session,
+    current_user: db_current_user,
+):
     user = db.query(models.User).filter(models.User.id == id).first()
     if not user:
         raise HTTPException(
@@ -58,8 +64,13 @@ def get_user(id: int, db: db_session):
 
 
 @router.put("/{id}")
-def change_password(id: int, current_password: str, new_password: str, db: db_session):
-    user = db.query(models.User).filter(models.User.id == id).first()
+def change_password(
+    current_password: str,
+    new_password: str,
+    db: db_session,
+    current_user: db_current_user,
+):
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
@@ -74,8 +85,8 @@ def change_password(id: int, current_password: str, new_password: str, db: db_se
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(id: int, db: db_session):
-    user_query = db.query(models.User).filter(models.User.id == id)
+def delete_account(db: db_session, current_user: db_current_user):
+    user_query = db.query(models.User).filter(models.User.id == current_user.id)
     user = user_query.first()
     if not user:
         raise HTTPException(
