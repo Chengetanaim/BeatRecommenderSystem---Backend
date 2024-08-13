@@ -26,7 +26,7 @@
   <li>Rappers can talk to the producer that they listen to the most, given that the producer has messaged them first</li>
 </ul>
 
-## Project Team
+## PROJECT TEAM
 
 <ol>
   <li>Chengetanai Mukanhairi</li>
