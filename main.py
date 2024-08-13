@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from app.database import engine
 from app import models
 from fastapi.middleware.cors import CORSMiddleware
+from app.routes.users import users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -19,3 +20,6 @@ app.add_middleware(
 @app.get("/home")
 def index():
     return {"message": "This is home"}
+
+
+app.include_router(users.router)
