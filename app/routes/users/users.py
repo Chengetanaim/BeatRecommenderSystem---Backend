@@ -4,6 +4,7 @@ from ... import models, schemas, utils
 from ...database import get_db
 from sqlalchemy.orm import Session
 from typing import Annotated
+from fastapi import Response
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -54,3 +55,32 @@ def get_user(id: int, db: db_session):
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
     return user
+
+
+@router.put("/{id}")
+def change_password(id: int, current_password: str, new_password: str, db: db_session):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    if not utils.verify_password(current_password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect current password"
+        )
+    user.password = utils.hash_password(new_password)
+    db.commit()
+    return {"message": "Password successfully changed"}
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(id: int, db: db_session):
+    user_query = db.query(models.User).filter(models.User.id == id)
+    user = user_query.first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    user_query.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

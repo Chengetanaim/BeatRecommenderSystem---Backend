@@ -1,12 +1,12 @@
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-
+from .config import settings
 
 Base = declarative_base()
 
 
-SQLALCHEMY_DATABASE_URL = f"postgresql://che:kVRcWqCubbzN29SRh5yt0OnplR8LxGEj@dpg-cqtkonlds78s739oaocg-a/beat_recommender_system"
+SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.username}:{settings.password}@{settings.host_name}/{settings.db_name}"
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
