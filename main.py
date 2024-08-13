@@ -3,6 +3,7 @@ from app.database import engine
 from app import models
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.users import users
+from app.routes.auth import auth
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,3 +24,4 @@ def index():
 
 
 app.include_router(users.router)
+app.include_router(auth.router)
