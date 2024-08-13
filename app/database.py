@@ -6,9 +6,7 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 
-SQLALCHEMY_DATABASE_URL = (
-    f"postgresql://postgres:admin@localhost:5432/beat-recommender-system"
-)
+SQLALCHEMY_DATABASE_URL = f"postgresql://che:kVRcWqCubbzN29SRh5yt0OnplR8LxGEj@dpg-cqtkonlds78s739oaocg-a/beat_recommender_system"
 
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
