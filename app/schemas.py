@@ -61,7 +61,7 @@ class UserResponse(UserBase):
 
 class UserProfileBase(BaseModel):
     user_id: int
-    date_of_birth: datetime.date
+    date_of_birth: datetime
     gender: Gender
     location: Location
     favourite_genre: Genre
