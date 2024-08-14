@@ -60,7 +60,6 @@ class UserResponse(UserBase):
 
 
 class UserProfileBase(BaseModel):
-    user_id: int
     date_of_birth: datetime
     gender: Gender
     location: Location
@@ -72,5 +71,7 @@ class UserProfileCreate(UserProfileBase):
 
 
 class UserProfileResponse(UserProfileBase):
+    user_id: int
     id: int
     created_at: datetime
+    user: UserResponse
