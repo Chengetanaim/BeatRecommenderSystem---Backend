@@ -4,6 +4,7 @@ from app import models
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.users import users
 from app.routes.auth import auth
+from app.routes.user_profiles import user_profiles
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -25,3 +26,4 @@ def index():
 
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(user_profiles.router)
